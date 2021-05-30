@@ -1,18 +1,14 @@
 package com.rojesh.bootcamp.learndagger.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import com.rojesh.bootcamp.learndagger.MyApplication
+import androidx.lifecycle.Observer
 import com.rojesh.bootcamp.learndagger.R
-import com.rojesh.bootcamp.learndagger.di.component.DaggerFragmentComponent
-import com.rojesh.bootcamp.learndagger.di.module.FragmentModule
-import javax.inject.Inject
+import com.rojesh.bootcamp.learndagger.di.component.FragmentComponent
+import com.rojesh.bootcamp.learndagger.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.activity_main.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<HomeViewModel>() {
 
     companion object {
 
@@ -26,33 +22,20 @@ class HomeFragment : Fragment() {
         }
     }
 
-    @Inject
-    lateinit var viewModel: HomeViewModel
+    override fun provideLayoutId() = R.layout.fragment_home
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        getDependencies()
-        super.onCreate(savedInstanceState)
+
+    override fun setUpObservers() {
+        super.setUpObservers()
+        viewModel.data.observe(this, Observer {
+            tv_message.text = it
+        })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
+    override fun injectDependencies(fragmentComponent: FragmentComponent) =
+            fragmentComponent.inject(this)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val tvMessage = view.findViewById<TextView>(R.id.tv_message)
-        tvMessage.text = viewModel.someData
-    }
-
-    private// to suppress null pointer exception warning
-    fun getDependencies() {
-        DaggerFragmentComponent
-                .builder()
-                .applicationComponent((context!!
-                        .applicationContext as MyApplication).applicationComponent)
-                .fragmentModule(FragmentModule(this)) // this is shown as deprecated as no instance provided by it is being injected
-                .build()
-                .inject(this)
+    override fun setUpView(view: View) {
     }
 
 }

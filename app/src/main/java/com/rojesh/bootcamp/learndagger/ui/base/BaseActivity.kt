@@ -23,7 +23,8 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
         setContentView(provideLayoutId())
         setUpObservers()
         setUpView(savedInstanceState)
-        }
+        viewModel.onCreate()
+    }
 
     protected open fun setUpObservers() {
         viewModel.messageStringId.observe(this, Observer {
@@ -31,7 +32,7 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
         })
 
         viewModel.messageString.observe(this, Observer {
-
+        showMessage(it)
         })
     }
 
