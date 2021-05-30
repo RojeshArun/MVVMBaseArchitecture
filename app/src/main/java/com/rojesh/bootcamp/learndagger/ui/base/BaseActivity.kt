@@ -6,6 +6,10 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.rojesh.bootcamp.learndagger.MyApplication
+import com.rojesh.bootcamp.learndagger.di.component.ActivityComponent
+import com.rojesh.bootcamp.learndagger.di.component.DaggerActivityComponent
+import com.rojesh.bootcamp.learndagger.di.module.ActivityModule
 import javax.inject.Inject
 
 abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
@@ -14,9 +18,11 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
     lateinit var viewModel: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectDependencies(buildActivityComponent())
         super.onCreate(savedInstanceState)
         setContentView(provideLayoutId())
         setUpObservers()
+        setUpView(savedInstanceState)
     }
 
     protected open fun setUpObservers() {
@@ -36,6 +42,18 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
 
     @LayoutRes
     protected abstract fun provideLayoutId(): Int
+
+    protected abstract fun setUpView(savedInstanceState: Bundle?)
+
+    protected abstract fun injectDependencies(activityComponent: ActivityComponent)
+
+    private fun buildActivityComponent() =
+            DaggerActivityComponent
+                    .builder()
+                    .applicationComponent((application as MyApplication).applicationComponent)
+                    .activityModule(ActivityModule(this))
+                    .build()
+
 
 
 }

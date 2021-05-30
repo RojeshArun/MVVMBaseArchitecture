@@ -13,5 +13,5 @@ class NetworkHelper @Inject constructor(
         @ApplicationContext private val context: Context) {
 
     // will check for network connectivity
-    val isNetworkConnected =  false
+    fun isNetworkConnected() = false
 }

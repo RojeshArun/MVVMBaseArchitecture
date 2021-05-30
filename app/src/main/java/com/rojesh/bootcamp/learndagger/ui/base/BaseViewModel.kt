@@ -14,7 +14,7 @@ abstract class BaseViewModel(
     val messageStringId = MutableLiveData<Int>()
     val messageString = MutableLiveData<String>()
 
-    protected fun checkInternetConnection(): Boolean = networkHelper.isNetworkConnected
+    protected fun checkInternetConnection(): Boolean = networkHelper.isNetworkConnected()
 
     protected fun handleNetworkError(err:Throwable){
         //Handle error
